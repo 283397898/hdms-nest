@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum roles {
+export enum Role {
   ADMIN = 'ADMIN',
   PERSONNEL = 'PERSONNEL',
   BUILDER = 'BUILDER',
@@ -23,8 +23,8 @@ export class Employee {
   @Column({ name: 'emp_password', type: 'character varying' })
   empPassword?: string;
 
-  @Column({ name: 'emp_role', type: 'enum', enum: roles })
-  empRole?: roles;
+  @Column({ name: 'emp_role', type: 'enum', enum: Role })
+  empRole?: Role;
 
   @Column({ name: 'emp_status', type: 'boolean' })
   empStatus?: boolean;

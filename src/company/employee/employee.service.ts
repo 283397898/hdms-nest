@@ -34,15 +34,12 @@ export class EmployeeService {
       const usernameList = employeesList.map(
         (employee) => employee.empUsername,
       );
-      if (
-        !(
-          await this.employeeRepository
-            .createQueryBuilder()
-            .select()
-            .where({ empUsername: In(usernameList) })
-            .getMany()
-        ).length
-      ) {
+      const empList = await this.employeeRepository
+        .createQueryBuilder()
+        .select()
+        .where({ empUsername: In(usernameList) })
+        .getMany();
+      if (!empList.length) {
         await this.employeeRepository
           .createQueryBuilder()
           .insert()
@@ -50,7 +47,8 @@ export class EmployeeService {
           .values(employeesList)
           .execute();
       } else {
-        return '此账户已存在！';
+        const usernames = empList.map((emp) => emp.empUsername).join('，');
+        return `${usernames}已存在！`;
       }
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -65,6 +63,7 @@ export class EmployeeService {
         .select([
           'employee.empId',
           'employee.empName',
+          'employee.empPassword',
           'employee.empUsername',
           'employee.empRole',
         ])
@@ -108,12 +107,19 @@ export class EmployeeService {
     }
   }
 
-  async findOneEmployee(employee): Promise<Employee[]> {
+  async findOneEmployee(employee: Employee): Promise<Employee[]> {
     try {
       return await this.employeeRepository
-        .createQueryBuilder()
-        .select()
-        .where({ empUsername: employee.empUsername })
+        .createQueryBuilder('employee')
+        .select([
+          'employee.empId',
+          'employee.empName',
+          'employee.empUsername',
+          'employee.empRole',
+        ])
+        .where({ empStatus: true })
+        .andWhere({ empUsername: employee.empUsername })
+        .andWhere({ empPassword: employee.empPassword })
         .getMany();
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
