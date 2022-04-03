@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, Repository } from 'typeorm';
 import { Employee } from '../../entities/employee.entity';
-
+class QueryData {
+  type: string;
+  data: string;
+}
 @Injectable()
 export class EmployeeService {
   constructor(
@@ -17,6 +20,7 @@ export class EmployeeService {
         .select([
           'employee.empId',
           'employee.empName',
+          'employee.empPassword',
           'employee.empUsername',
           'employee.empRole',
         ])
@@ -55,8 +59,8 @@ export class EmployeeService {
     }
   }
 
-  async searchEmployees(employee: Employee): Promise<Employee[]> {
-    const usernameStr = `%${employee.empUsername.split('').join('%')}%`;
+  async searchEmployees(query: QueryData): Promise<Employee[]> {
+    const queryStr = `%${query.data.split('').join('%')}%`;
     try {
       return await this.employeeRepository
         .createQueryBuilder('employee')
@@ -68,7 +72,7 @@ export class EmployeeService {
           'employee.empRole',
         ])
         .where({ empStatus: true })
-        .andWhere({ empUsername: ILike(usernameStr) })
+        .andWhere({ [query.type]: ILike(queryStr) })
         .take(5)
         .getMany();
     } catch (error) {

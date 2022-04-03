@@ -1,8 +1,15 @@
-import { CacheModule, Module } from '@nestjs/common';
+import {
+  CacheModule,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyModule } from './company/company.module';
+import { DecodeMiddleware } from './middleware/decode.middleware';
 
 @Module({
   imports: [
@@ -21,4 +28,10 @@ import { CompanyModule } from './company/company.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(DecodeMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

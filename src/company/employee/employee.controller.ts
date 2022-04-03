@@ -36,8 +36,9 @@ export class EmployeeController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.PERSONNEL)
   @Get('search')
-  async searchEmployees(@Query() employee: Employee) {
-    return this.employeeService.searchEmployees(employee);
+  async searchEmployees(@Query() queryData) {
+    console.log(queryData);
+    return this.employeeService.searchEmployees(queryData);
   }
 
   @UseGuards(RolesGuard)

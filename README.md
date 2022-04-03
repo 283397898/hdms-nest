@@ -17,13 +17,13 @@ $ npm install
 ### 运行程序
 
 ```bash
-# 开发
+# 直接开
 $ npm run start
 
-# 热更新
+# 开发环境
 $ npm run start:dev
 
-# production mode
+# 生产环境
 $ npm run start:prod
 ```
 

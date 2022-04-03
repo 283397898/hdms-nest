@@ -2,7 +2,7 @@ import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 
-@Controller('auth')
+@Controller('company/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -13,8 +13,9 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('profile')
+  @Get('login')
   getProfile(@Request() req) {
+    console.log(req.user);
     return req.user;
   }
 }

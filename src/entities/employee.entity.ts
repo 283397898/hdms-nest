@@ -9,18 +9,18 @@ export enum Role {
   POWERLESS = 'POWERLESS',
 }
 
-@Entity('company.employee')
+@Entity('public.employee')
 export class Employee {
   @PrimaryGeneratedColumn({ name: 'emp_id', type: 'integer' })
   empId?: number;
 
-  @Column({ name: 'emp_name', type: 'character varying' })
+  @Column({ name: 'emp_name', type: 'character varying', length: 255 })
   empName?: string;
 
-  @Column({ name: 'emp_username', type: 'character varying' })
+  @Column({ name: 'emp_username', type: 'character varying', length: 255 })
   empUsername?: string;
 
-  @Column({ name: 'emp_password', type: 'character varying' })
+  @Column({ name: 'emp_password', type: 'character varying', length: 255 })
   empPassword?: string;
 
   @Column({ name: 'emp_role', type: 'enum', enum: Role })

@@ -33,9 +33,4 @@ export class AuthService {
       employee,
     };
   }
-
-  async aa(token) {
-    const user = this.jwtService.verify(token);
-    console.log(user);
-  }
 }
