@@ -10,6 +10,9 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyModule } from './company/company.module';
 import { DecodeMiddleware } from './middleware/decode.middleware';
+// import { CustomerServiceModule } from './customer-service/customer-service.module';
+import { ClientModule } from './client/client.module';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { DecodeMiddleware } from './middleware/decode.middleware';
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
     CompanyModule,
+    // CustomerServiceModule,
+    ClientModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

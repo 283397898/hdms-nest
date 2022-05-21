@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Post,
   Put,
   Query,
@@ -30,14 +32,18 @@ export class EmployeeController {
   @Roles(Role.ADMIN, Role.PERSONNEL)
   @Post()
   async insertEmployees(@Body() employeesList: Employee[]) {
-    return this.employeeService.insertEmployees(employeesList);
+    const data = await this.employeeService.insertEmployees(employeesList);
+    if (typeof data === 'string') {
+      throw new HttpException(data, HttpStatus.BAD_REQUEST);
+    } else {
+      return data;
+    }
   }
 
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.PERSONNEL)
   @Get('search')
   async searchEmployees(@Query() queryData) {
-    console.log(queryData);
     return this.employeeService.searchEmployees(queryData);
   }
 

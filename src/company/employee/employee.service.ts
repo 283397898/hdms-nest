@@ -2,10 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, Repository } from 'typeorm';
 import { Employee } from '../../entities/employee.entity';
-class QueryData {
-  type: string;
-  data: string;
-}
+import { SHA256 } from 'crypto-js';
+import { QueryData } from '../../class/QueryData';
+
 @Injectable()
 export class EmployeeService {
   constructor(
@@ -42,14 +41,19 @@ export class EmployeeService {
         .createQueryBuilder()
         .select()
         .where({ empUsername: In(usernameList) })
+        .andWhere({ empStatus: true })
         .getMany();
       if (!empList.length) {
+        employeesList.forEach((employee) => {
+          employee.empPassword = SHA256(employee.empUsername).toString();
+        });
         await this.employeeRepository
           .createQueryBuilder()
           .insert()
           .into(Employee)
           .values(employeesList)
           .execute();
+        return await this.findAllEmployees();
       } else {
         const usernames = empList.map((emp) => emp.empUsername).join('，');
         return `${usernames}已存在！`;
